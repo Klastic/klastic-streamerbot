@@ -6,3 +6,4 @@ Recurring actions that fire on a schedule during a live stream. Each timer is a 
 |---|---|---|
 | Social Reminder | [`social-reminder/`](social-reminder/) | Rotates through social platform links on a schedule |
 | Hydration Reminder | [`hydration-reminder/`](hydration-reminder/) | Reminds the streamer to drink water and take breaks |
+| No Spoilers Reminder | [`no-spoilers/`](no-spoilers/) | Posts a spoiler-warning message; suppressed per platform when the current game is on a skip list |
