@@ -2,9 +2,11 @@
 
 ## Summary
 
-Displays how long the current stream has been live. It reads a UTC start-time stored as a global variable when the stream goes online, calculates the elapsed duration, and posts a formatted message in chat.
+Displays how long the current stream has been live. Pulls the stream time **directly from OBS** via the OBS WebSocket integration in Streamer.bot (primary), and falls back to a `streamStartedAt` global variable if OBS is not connected or not streaming.
 
-Handles edge cases: missing global, malformed timestamp, and stale values from a previous stream session.
+Works on Twitch, YouTube, and Kick — the source is OBS, not a platform API, so it's fully platform-agnostic.
+
+Handles edge cases: OBS not connected, OBS connected but not streaming, missing fallback global, malformed timestamp, and stale values from a previous session.
 
 ---
 
@@ -14,26 +16,34 @@ See [`uptime.cs`](uptime.cs).
 
 ---
 
+## Requirements
+
+- **OBS WebSocket** connected in Streamer.bot (preferred — used as primary source)
+  - In Streamer.bot, go to **Settings → OBS WebSocket** and connect
+- **Stream Start action** sets `streamStartedAt` global (used as fallback when OBS is not available)
+
+---
+
 ## Streamer.bot Setup
 
-### Step 1 — Store the stream start time
+### Step 1 — Connect OBS (required for primary source)
 
-1. Go to **Events → Twitch → Stream Online**
-2. Create (or open) the action linked to that event
-3. Add a sub-action: **Variables → Set Global Variable**
-   - Name: `streamStartedAt`
-   - Value: `%utcNow%`
-   - Persisted: **No** (stream time should reset each session)
+1. In Streamer.bot go to **Settings → OBS WebSocket**
+2. Configure the host/port (default: `localhost:4455`) and click **Connect**
+3. Confirm the connection status shows as connected
 
-### Step 2 — Create the command action
+### Step 2 — Set up the fallback (optional but recommended)
 
-1. Go to **Actions → Add**
-2. Name it `!uptime`
-3. Add a sub-action: **Core → Execute C# Code**
-4. Paste the contents of `uptime.cs` into the editor
-5. Click **Compile**, then **Save**
+The `streamStartedAt` global from the [`stream-start`](../../events/stream-start/) action acts as a fallback when OBS is unavailable.
 
-### Step 3 — Create the command trigger
+### Step 3 — Create the command action
+
+1. Go to **Actions → Add**, name it `!uptime`
+2. Add a sub-action: **Core → Execute C# Code**
+3. Paste the contents of `uptime.cs` into the editor
+4. Click **Compile**, then **Save**
+
+### Step 4 — Create the command trigger
 
 1. Go to **Commands → Add**
 2. Set the command to `!uptime`
@@ -41,6 +51,7 @@ See [`uptime.cs`](uptime.cs).
 4. Recommended settings:
    - **Global Cooldown**: 5–10 seconds (prevents spam)
    - **Case Insensitive**: Yes
+5. Add triggers for each platform you stream on (Twitch Chat Message, YouTube Chat Message, Kick Chat Message)
 
 ---
 
@@ -48,21 +59,33 @@ See [`uptime.cs`](uptime.cs).
 
 | Value | Location | Purpose |
 |---|---|---|
-| `GLOBAL_STREAM_START` | Top of script | Name of the global variable holding the start time |
-| `MSG_NOT_LIVE` | Top of script | Message sent when the stream start time is unavailable |
-| Global cooldown | Streamer.bot command settings | Reduce chat spam |
+| `OBS_CONNECTION` | Top of script | OBS connection index (0 = first OBS instance in Streamer.bot) |
+| `GLOBAL_STREAM_START` | Top of script | Name of the fallback global variable |
+| `MSG_NOT_LIVE` | Top of script | Message sent when uptime cannot be determined |
+
+---
+
+## Platform Support
+
+| Platform | Source | Notes |
+|---|---|---|
+| Twitch | OBS → global fallback | Fully supported |
+| YouTube | OBS → global fallback | Fully supported |
+| Kick | OBS → global fallback | Fully supported |
 
 ---
 
 ## Repo Notes
 
-Self-contained uptime command. Depends on a `streamStartedAt` global that must be set by your Stream Online event. No external API calls required.
+OBS-primary uptime command. Uses `CPH.ObsSendRaw("GetStreamStatus")` to get the live stream timecode from OBS WebSocket v5. Falls back to the `streamStartedAt` global if OBS is unavailable. Platform-agnostic.
 
 ---
 
 ## Video Notes
 
 Worth highlighting:
-- The split between **storing the start time** (event action) and **reading it** (command action) — this is the key pattern
-- The `%utcNow%` variable in Streamer.bot and why UTC is used
-- The `FormatUptime` helper and how it handles sub-minute, sub-hour, and multi-hour streams
+- Why OBS is a better source than a manually-stored global (OBS tracks the exact stream start internally)
+- The `CPH.ObsSendRaw("GetStreamStatus")` call and parsing the `outputTimecode` field
+- The fallback chain: OBS → global → "unavailable" message
+- The `responseData` nesting behavior difference between OBS WebSocket versions
+

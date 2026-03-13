@@ -1,10 +1,14 @@
-# `!shoutout` / `!so` — Broadcaster Shoutout
+# `!shoutout` / `!so` — Cross-Platform Broadcaster Shoutout
 
 ## Summary
 
-Gives a shoutout to another Twitch streamer. Resolves the target's current channel info (display name and last game played) via Streamer.bot's built-in Twitch API and posts a formatted chat message. Also fires Twitch's native `/shoutout` command for the on-platform SO notification.
+Gives a shoutout to another streamer, with behavior that differs by platform:
 
-Includes a per-target cooldown (defaults to 5 minutes) to prevent double-SO spam. Non-mods are blocked by default; this is configurable.
+- **Twitch**: resolves the target's Twitch display name and last-played game via the Twitch API, then fires Twitch's native `/shoutout` command in addition to the chat message
+- **YouTube**: posts a shoutout message with a best-effort `https://youtube.com/@username` link
+- **Kick**: posts a shoutout message with a `https://kick.com/username` link
+
+Per-target cooldown (default 5 min) is shared across all platforms — if someone was just shouted out on Twitch, they can't be immediately shouted out on YouTube either. Non-mods are blocked by default.
 
 ---
 
@@ -24,22 +28,21 @@ See [`shoutout.cs`](shoutout.cs).
 
 ### Create the command triggers
 
-Create **two** command triggers pointing to the same action:
+Create **two** command triggers pointing to the same action, for each platform:
 
-| Command | Notes |
-|---|---|
-| `!shoutout` | Long form |
-| `!so` | Short alias |
+| Command | Platform | Notes |
+|---|---|---|
+| `!shoutout` | All platforms | Long form |
+| `!so` | All platforms | Short alias |
 
-Recommended settings for both:
+Recommended settings:
 - **Global Cooldown**: 0 (script handles per-target cooldown)
 - **Case Insensitive**: Yes
-- If `ALLOW_NON_MODS = false`, you can also restrict at the command level to **Mods+**
+- Restrict to **Mods+** at the command level if `ALLOW_NON_MODS = false`
 
-### Required Twitch permissions
+### Required Twitch permissions (Twitch path only)
 
-- Your Twitch bot/editor account needs **Editor** permission on the channel to fire the native `/shoutout` via `CPH.TwitchShoutoutUser()`
-- If you don't have editor rights, remove or comment out that line
+The `CPH.TwitchShoutoutUser()` call requires your bot account to have **Editor** permission on the channel. If you don't have editor rights, the chat message will still be sent — only the native platform SO will be skipped (it logs a warning).
 
 ---
 
@@ -48,21 +51,35 @@ Recommended settings for both:
 | Value | Location | Purpose |
 |---|---|---|
 | `PER_TARGET_COOLDOWN_SECONDS` | Top of script | Minimum seconds before the same target can be shouted out again |
-| `MSG_WITH_GAME` | Top of script | Message when the target has a last-played game set |
-| `MSG_WITHOUT_GAME` | Top of script | Message when the target's category is empty |
-| `ALLOW_NON_MODS` | Top of script | Set to `true` to allow all viewers to use `!so` |
+| `MSG_TWITCH_WITH_GAME` | Top of script | Twitch message when target has a last-played game |
+| `MSG_TWITCH_WITHOUT_GAME` | Top of script | Twitch message when target has no category |
+| `MSG_YOUTUBE` | Top of script | YouTube shoutout message |
+| `MSG_KICK` | Top of script | Kick shoutout message |
+| `ALLOW_NON_MODS` | Top of script | Set to `true` to allow all viewers |
+
+---
+
+## Platform Support
+
+| Platform | Channel Info Lookup | Native SO | Fallback URL |
+|---|---|---|---|
+| Twitch | ✅ Twitch API (display name + game) | ✅ `/shoutout` command | N/A |
+| YouTube | ❌ No API available | N/A | `youtube.com/@username` |
+| Kick | ❌ No API available | N/A | `kick.com/username` |
 
 ---
 
 ## Repo Notes
 
-Uses `CPH.TwitchGetExtendedUserInfoByLogin` for display name and last game. Per-target cooldown is stored as a non-persisted global (resets on Streamer.bot restart). Also calls `CPH.TwitchShoutoutUser` for the native Twitch shoutout feature.
+Platform-aware shoutout command. Twitch path uses `CPH.TwitchGetExtendedUserInfoByLogin` for display name/game and fires `CPH.TwitchShoutoutUser`. YouTube/Kick paths construct best-effort URLs from the provided username with no API lookup.
 
 ---
 
 ## Video Notes
 
 Worth highlighting:
-- The difference between the chat message SO and the native Twitch `/shoutout` command
-- How the `MSG_WITH_GAME` / `MSG_WITHOUT_GAME` fallback handles streamers with no category
-- Why per-target cooldowns use globals keyed by login (`soCooldown_username`) vs. a single global
+- Why Twitch can look up channel info but YouTube/Kick cannot (API access differences)
+- The `HandleTwitchShoutout` / `HandleNonTwitchShoutout` routing pattern
+- Why the cooldown key is shared across platforms (prevents double-SO across platforms)
+- The best-effort `youtube.com/@handle` URL construction and its limitations
+
