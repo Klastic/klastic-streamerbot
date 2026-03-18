@@ -1,85 +1,101 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
-  "release-type": "simple",
+  "release-type": "dotnet",
   "packages": {
     ".": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "klastic-streamerbot",
+      "version-file": "klastic-streamerbot.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "commands/followage": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "followage",
+      "version-file": "commands/followage/followage.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "commands/lurk": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "lurk",
+      "version-file": "commands/lurk/lurk.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "commands/shoutout": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "shoutout",
+      "version-file": "commands/shoutout/shoutout.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "commands/socials": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "socials",
+      "version-file": "commands/socials/socials.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "commands/uptime": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "uptime",
+      "version-file": "commands/uptime/uptime.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "events/new-follower": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "new-follower",
+      "version-file": "events/new-follower/new-follower.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "events/new-subscriber": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "new-subscriber",
+      "version-file": "events/new-subscriber/new-subscriber.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "events/raid-handler": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "raid-handler",
+      "version-file": "events/raid-handler/raid-handler.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "events/stream-end": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "stream-end",
+      "version-file": "events/stream-end/stream-end.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "events/stream-start": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "stream-start",
+      "version-file": "events/stream-start/stream-start.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "timers/hydration-reminder": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "hydration-reminder",
+      "version-file": "timers/hydration-reminder/hydration-reminder.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "timers/no-spoilers": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "no-spoilers",
+      "version-file": "timers/no-spoilers/no-spoilers.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "timers/social-reminder": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "social-reminder",
+      "version-file": "timers/social-reminder/social-reminder.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "utilities/follow-store": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "follow-store",
+      "version-file": "utilities/follow-store/follow-store.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "utilities/user-cooldown": {
-      "release-type": "simple",
+      "release-type": "dotnet",
       "package-name": "user-cooldown",
+      "version-file": "utilities/user-cooldown/user-cooldown.csproj",
       "changelog-path": "CHANGELOG.md"
     }
   }

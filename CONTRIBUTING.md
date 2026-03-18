@@ -69,8 +69,8 @@ This repository uses [Release Please](https://github.com/googleapis/release-plea
 
 | Scope | Version file | Git tag format |
 |-------|-------------|----------------|
-| Entire repository | `version.txt` | `v1.2.3` |
-| Individual component (e.g. `commands/lurk`) | `commands/lurk/version.txt` | `lurk-v1.2.3` |
+| Entire repository | `klastic-streamerbot.csproj` | `v1.2.3` |
+| Individual component (e.g. `commands/lurk`) | `commands/lurk/lurk.csproj` | `lurk-v1.2.3` |
 
 ### What triggers a version bump
 
