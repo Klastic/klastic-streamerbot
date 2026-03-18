@@ -32,10 +32,20 @@ public class CPHInline
         "🐦 Follow on Twitter/X for stream updates and highlights → https://twitter.com/YOURHANDLE",
     };
 
+    // Set to true to only send reminders while OBS reports streaming is active.
+    // Requires OBS to be connected to Streamer.bot via the OBS WebSocket plugin.
+    private const bool CHECK_OBS_STREAMING = true;
+
     // -------------------------------------------------------------------------
 
     public bool Execute()
     {
+        if (CHECK_OBS_STREAMING && !CPH.ObsIsStreaming())
+        {
+            CPH.LogInfo("[social-reminder] OBS is not streaming — skipping.");
+            return true;
+        }
+
         if (MESSAGES.Length == 0)
         {
             CPH.LogWarn("[social-reminder] MESSAGES array is empty. Add at least one message.");
