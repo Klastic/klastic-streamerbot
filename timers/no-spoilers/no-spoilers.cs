@@ -36,10 +36,20 @@ public class CPHInline
     private const string GLOBAL_KICK_GAME    = "kickGameName";
     private const string GLOBAL_YOUTUBE_GAME = "youtubeGameName";
 
+    // Set to true to only send spoiler reminders while OBS reports streaming is active.
+    // Requires OBS to be connected to Streamer.bot via the OBS WebSocket plugin.
+    private const bool CHECK_OBS_STREAMING = true;
+
     // -------------------------------------------------------------------------
 
     public bool Execute()
     {
+        if (CHECK_OBS_STREAMING && !CPH.ObsIsStreaming())
+        {
+            CPH.LogInfo("[no-spoilers] OBS is not streaming — skipping spoiler reminder.");
+            return true;
+        }
+
         string twitchGame  = CPH.GetGlobalVar<string>(GLOBAL_TWITCH_GAME, true)  ?? string.Empty;
         string kickGame    = CPH.GetGlobalVar<string>(GLOBAL_KICK_GAME, true)    ?? string.Empty;
         string youtubeGame = CPH.GetGlobalVar<string>(GLOBAL_YOUTUBE_GAME, true) ?? string.Empty;
