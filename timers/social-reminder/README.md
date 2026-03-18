@@ -29,7 +29,7 @@ See [`social-reminder.cs`](social-reminder.cs).
 3. Action: `Social Reminder Timer`
 4. Interval: `1200` seconds (or your preferred interval)
 
-> **Note:** Streamer.bot timers do not have a native "only when live" option. To prevent the reminder firing while you are offline, add an OBS live check at the top of `Execute()` — see [`no-spoilers.cs`](../no-spoilers/no-spoilers.cs) for the pattern using `CPH.ObsIsStreaming()`.
+> **Note:** Streamer.bot timers do not have a native "only when live" option. The script handles this automatically — it checks `CPH.ObsIsStreaming()` at the start and skips the reminder if OBS is not streaming. Set `CHECK_OBS_STREAMING = false` in the script if you don't use OBS.
 
 ### Step 3 — Track chat activity (required for activity guard)
 
@@ -52,6 +52,7 @@ The script reads a global `chatLineCount` that increments with each chat message
 |---|---|---|
 | `MESSAGES` array | Top of script | The messages to rotate through — add/remove/reorder freely |
 | `MIN_CHAT_LINES_SINCE_LAST` | Top of script | Minimum chat activity required before posting (0 to disable) |
+| `CHECK_OBS_STREAMING` | Top of script | Set to `false` to skip the OBS live check (e.g. if you use SLOBS) |
 | Timer interval | Streamer.bot Timers settings | How often the action is triggered |
 
 ---

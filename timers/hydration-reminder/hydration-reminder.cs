@@ -20,10 +20,20 @@ public class CPHInline
     // Global variable name holding the broadcaster's display name (set by stream start action)
     private const string GLOBAL_BROADCASTER_NAME = "broadcastUserName";
 
+    // Set to true to only send reminders while OBS reports streaming is active.
+    // Requires OBS to be connected to Streamer.bot via the OBS WebSocket plugin.
+    private const bool CHECK_OBS_STREAMING = true;
+
     // -------------------------------------------------------------------------
 
     public bool Execute()
     {
+        if (CHECK_OBS_STREAMING && !CPH.ObsIsStreaming())
+        {
+            CPH.LogInfo("[hydration-reminder] OBS is not streaming — skipping.");
+            return true;
+        }
+
         string broadcaster = CPH.GetGlobalVar<string>(GLOBAL_BROADCASTER_NAME, false);
         if (string.IsNullOrEmpty(broadcaster))
         {
