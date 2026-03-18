@@ -27,8 +27,7 @@ See [`no-spoilers.cs`](no-spoilers.cs).
 1. Go to **Timers → Add**
 2. Name: `No Spoilers Reminder`
 3. Action: `No Spoilers Reminder`
-4. Interval: `30` minutes (recommended; adjust to taste)
-5. **Only when live**: Yes ✓
+4. Interval: `1800` seconds (recommended; adjust to taste)
 
 ### Step 3 — Provide the current game globals
 
