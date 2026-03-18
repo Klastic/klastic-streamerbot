@@ -55,6 +55,35 @@ chore: update .gitignore to exclude OS metadata files
 
 ---
 
+## Versioning
+
+This repository uses [Release Please](https://github.com/googleapis/release-please) to automate semantic versioning based on conventional commits.
+
+### How it works
+
+- Every time a PR is merged into `main`, the Release Please GitHub Action runs automatically.
+- It scans the new commits, determines the appropriate version bump (major / minor / patch), and opens a **release PR** that updates the relevant `.csproj` version files and `CHANGELOG.md` entries.
+- When that release PR is merged, GitHub Releases are created with the correct tags.
+
+### Version scope
+
+| Scope | Version file | Git tag format |
+|-------|-------------|----------------|
+| Entire repository | `klastic-streamerbot.csproj` | `v1.2.3` |
+| Individual component (e.g. `commands/lurk`) | `commands/lurk/lurk.csproj` | `lurk-v1.2.3` |
+
+### What triggers a version bump
+
+| Commit type | Bump |
+|-------------|------|
+| `feat` | **minor** (e.g. `1.0.0` → `1.1.0`) |
+| `fix`, `perf`, `refactor`, `docs`, `style`, `test`, `build`, `ci`, `chore`, `revert` | **patch** (e.g. `1.0.0` → `1.0.1`) |
+| Any type with `BREAKING CHANGE` footer or `!` suffix | **major** (e.g. `1.0.0` → `2.0.0`) |
+
+Only the component whose files were modified will have its version bumped. The root repository version is **always** bumped whenever any component is updated.
+
+---
+
 ## General Guidelines
 
 - Follow the existing code style in `.cs` files.
