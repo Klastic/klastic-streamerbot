@@ -62,7 +62,7 @@ This repository uses [Release Please](https://github.com/googleapis/release-plea
 ### How it works
 
 - Every time a PR is merged into `main`, the Release Please GitHub Action runs automatically.
-- It scans the new commits, determines the appropriate version bump (major / minor / patch), and opens a **release PR** that updates the relevant `version.txt` files and `CHANGELOG.md` entries.
+- It scans the new commits, determines the appropriate version bump (major / minor / patch), and opens a **release PR** that updates the relevant `.csproj` version files and `CHANGELOG.md` entries.
 - When that release PR is merged, GitHub Releases are created with the correct tags.
 
 ### Version scope
