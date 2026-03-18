@@ -1,5 +1,11 @@
 # klastic-streamerbot
 
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Klastic/klastic-streamerbot)](https://github.com/Klastic/klastic-streamerbot/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub issues](https://img.shields.io/github/issues/Klastic/klastic-streamerbot)](https://github.com/Klastic/klastic-streamerbot/issues)
+[![GitHub stars](https://img.shields.io/github/stars/Klastic/klastic-streamerbot)](https://github.com/Klastic/klastic-streamerbot/stargazers)
+[![Streamer.bot](https://img.shields.io/badge/Streamer.bot-0.2.x-blueviolet)](https://streamer.bot)
+
 A collection of production-ready [Streamer.bot](https://streamer.bot) commands, C# inline scripts, timers, event handlers, and automations built for real livestream use.
 
 This repository supports my personal stream setup and serves as a public reference for my YouTube tutorials. Everything here is meant to be copied, imported, and used directly.
