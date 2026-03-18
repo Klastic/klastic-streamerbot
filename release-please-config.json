@@ -1,0 +1,86 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "klastic-streamerbot",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "commands/followage": {
+      "release-type": "simple",
+      "package-name": "followage",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "commands/lurk": {
+      "release-type": "simple",
+      "package-name": "lurk",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "commands/shoutout": {
+      "release-type": "simple",
+      "package-name": "shoutout",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "commands/socials": {
+      "release-type": "simple",
+      "package-name": "socials",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "commands/uptime": {
+      "release-type": "simple",
+      "package-name": "uptime",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "events/new-follower": {
+      "release-type": "simple",
+      "package-name": "new-follower",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "events/new-subscriber": {
+      "release-type": "simple",
+      "package-name": "new-subscriber",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "events/raid-handler": {
+      "release-type": "simple",
+      "package-name": "raid-handler",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "events/stream-end": {
+      "release-type": "simple",
+      "package-name": "stream-end",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "events/stream-start": {
+      "release-type": "simple",
+      "package-name": "stream-start",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "timers/hydration-reminder": {
+      "release-type": "simple",
+      "package-name": "hydration-reminder",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "timers/no-spoilers": {
+      "release-type": "simple",
+      "package-name": "no-spoilers",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "timers/social-reminder": {
+      "release-type": "simple",
+      "package-name": "social-reminder",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "utilities/follow-store": {
+      "release-type": "simple",
+      "package-name": "follow-store",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "utilities/user-cooldown": {
+      "release-type": "simple",
+      "package-name": "user-cooldown",
+      "changelog-path": "CHANGELOG.md"
+    }
+  }
+}
