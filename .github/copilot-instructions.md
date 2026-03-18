@@ -115,6 +115,44 @@ Add the new package with its starting version:
 
 ---
 
+## Timer Setup Guidelines
+
+When documenting or creating a Streamer.bot timer, keep these two rules in mind:
+
+### Interval is in seconds
+
+The **Interval** field in Streamer.bot timers accepts a value in **seconds**, not minutes. Always document (and configure) intervals in seconds.
+
+| Human-friendly value | Correct interval |
+|---|---|
+| 20 minutes | `1200` seconds |
+| 30 minutes | `1800` seconds |
+| 1 hour | `3600` seconds |
+
+### There is no "Only when live" timer option
+
+Streamer.bot timers do **not** have a native "only when live" toggle. To prevent a timer from firing while the stream is offline, add an OBS streaming check inside the script's `Execute()` method:
+
+```csharp
+private const bool CHECK_OBS_STREAMING = true;
+
+public bool Execute()
+{
+    if (CHECK_OBS_STREAMING && !CPH.ObsIsStreaming())
+    {
+        CPH.LogInfo("[script-name] OBS is not streaming — skipping.");
+        return true;
+    }
+    // ... rest of the action
+}
+```
+
+See [`timers/no-spoilers/no-spoilers.cs`](../timers/no-spoilers/no-spoilers.cs) for a complete example.
+
+Do **not** include a step like `Only when live: Yes ✓` in timer setup instructions — this option does not exist in Streamer.bot.
+
+---
+
 ## Pull Request Title Format
 
 Every pull request title **must** follow the [Conventional Commits](https://www.conventionalcommits.org/) format to pass the `Semantic Pull Request / Validate PR title` check:

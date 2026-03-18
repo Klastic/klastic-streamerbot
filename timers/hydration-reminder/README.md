@@ -25,8 +25,9 @@ See [`hydration-reminder.cs`](hydration-reminder.cs).
 1. Go to **Timers → Add**
 2. Name: `Hydration Reminder`
 3. Action: `Hydration Reminder`
-4. Interval: `30` minutes (recommended; adjust to taste)
-5. **Only when live**: Yes ✓
+4. Interval: `1800` seconds (recommended; adjust to taste)
+
+> **Note:** Streamer.bot timers do not have a native "only when live" option. To prevent the reminder firing while you are offline, add an OBS live check at the top of `Execute()` — see [`no-spoilers.cs`](../no-spoilers/no-spoilers.cs) for the pattern using `CPH.ObsIsStreaming()`.
 
 ### Optional: Store the broadcaster display name
 
@@ -57,5 +58,5 @@ Simple alternating two-message timer. Toggle state is stored as a non-persisted 
 
 Worth highlighting:
 - The boolean toggle stored as a global and flipped each run
-- Why "Only when live" matters for timers
+- How to add an OBS live check (`CPH.ObsIsStreaming()`) to prevent offline timer spam
 - How to quickly swap from two messages to a longer rotation list if desired

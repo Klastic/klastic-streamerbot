@@ -27,8 +27,9 @@ See [`social-reminder.cs`](social-reminder.cs).
 1. Go to **Timers → Add**
 2. Name: `Social Reminder`
 3. Action: `Social Reminder Timer`
-4. Interval: `20` minutes (or your preferred interval)
-5. **Only when live**: Yes ✓
+4. Interval: `1200` seconds (or your preferred interval)
+
+> **Note:** Streamer.bot timers do not have a native "only when live" option. To prevent the reminder firing while you are offline, add an OBS live check at the top of `Execute()` — see [`no-spoilers.cs`](../no-spoilers/no-spoilers.cs) for the pattern using `CPH.ObsIsStreaming()`.
 
 ### Step 3 — Track chat activity (required for activity guard)
 
