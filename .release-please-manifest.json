@@ -11,7 +11,7 @@
   "events/stream-end": "1.0.0",
   "events/stream-start": "1.0.0",
   "timers/hydration-reminder": "1.0.0",
-  "timers/no-spoilers": "1.0.0",
+  "timers/no-spoilers": "1.1.1",
   "timers/social-reminder": "1.0.0",
   "utilities/follow-store": "1.0.0",
   "utilities/user-cooldown": "1.0.0"
