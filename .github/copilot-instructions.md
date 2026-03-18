@@ -20,11 +20,11 @@ Each sub-package folder contains at minimum:
 
 ## Versioning
 
-This repository uses [Release Please](https://github.com/googleapis/release-please) (`googleapis/release-please-action@v4`) with the `dotnet` release type for automated semantic versioning.
+This repository uses [Release Please](https://github.com/googleapis/release-please) (`googleapis/release-please-action@v4`) with the `simple` release type for automated semantic versioning.
 
 ### Version files
 
-Every package — the root repository and each sub-package — has a `.csproj` file that holds its version in a `<Version>` element:
+Every package — the root repository and each sub-package — has a `.csproj` file that holds its version as a plain version string:
 
 | Package | Version file |
 |---------|-------------|
@@ -33,19 +33,15 @@ Every package — the root repository and each sub-package — has a `.csproj` f
 | `events/new-follower` | `events/new-follower/new-follower.csproj` |
 | *(same pattern for all sub-packages)* | `<category>/<name>/<name>.csproj` |
 
-A minimal `.csproj` version file looks like:
+A minimal `.csproj` version file contains just the version string:
 
-```xml
-<Project>
-  <PropertyGroup>
-    <Version>1.0.0</Version>
-  </PropertyGroup>
-</Project>
+```
+1.0.0
 ```
 
 ### Release Please configuration
 
-- **`release-please-config.json`** — declares every package with `release-type: dotnet` and an explicit `version-file` path pointing to its `.csproj`.
+- **`release-please-config.json`** — declares every package with `release-type: simple` and an explicit `version-file` path pointing to its `.csproj`.
 - **`.release-please-manifest.json`** — stores the current version for every package; must be initialised with `"1.0.0"` for any new entry.
 - **`.github/workflows/release-please.yml`** — triggers on every push to `main`; opens/updates a release PR automatically.
 
@@ -74,14 +70,10 @@ When adding a new sub-package (command, event, timer, or utility), the following
 └── <name>.csproj      # Version file (start at 1.0.0)
 ```
 
-The `.csproj` content:
+The `.csproj` content (just the version string, no XML):
 
-```xml
-<Project>
-  <PropertyGroup>
-    <Version>1.0.0</Version>
-  </PropertyGroup>
-</Project>
+```
+1.0.0
 ```
 
 ### 2. Register the package in `release-please-config.json`
@@ -90,7 +82,7 @@ Add a new entry under `"packages"`:
 
 ```json
 "<category>/<name>": {
-  "release-type": "dotnet",
+  "release-type": "simple",
   "package-name": "<name>",
   "version-file": "<category>/<name>/<name>.csproj",
   "changelog-path": "CHANGELOG.md"
