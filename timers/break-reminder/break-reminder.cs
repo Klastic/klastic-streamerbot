@@ -9,7 +9,7 @@ public class CPHInline
 
     // Message sent to chat when the break timer fires.
     // %streamer% is replaced with the broadcaster's display name.
-    private const string MSG_BREAK = "🧘 Hey %streamer%, time for a quick break! Stretch, rest your eyes, and take a moment. You've got this! 💪";
+    private const string MSG_BREAK = "Hey %streamer%, good time for a quick break — stretch and rest your eyes for a moment.";
 
     // Global variable name holding the broadcaster's display name (set by stream start action)
     private const string GLOBAL_BROADCASTER_NAME = "broadcastUserName";
