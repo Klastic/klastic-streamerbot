@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues](https://img.shields.io/github/issues/Klastic/klastic-streamerbot)](https://github.com/Klastic/klastic-streamerbot/issues)
 [![GitHub stars](https://img.shields.io/github/stars/Klastic/klastic-streamerbot)](https://github.com/Klastic/klastic-streamerbot/stargazers)
-[![Streamer.bot](https://img.shields.io/badge/Streamer.bot-0.2.x-blueviolet)](https://streamer.bot)
+[![Streamer.bot](https://img.shields.io/badge/Streamer.bot-1.0.4-blueviolet)](https://streamer.bot)
 
 A collection of production-ready [Streamer.bot](https://streamer.bot) commands, C# inline scripts, timers, event handlers, and automations built for real livestream use.
 
@@ -25,7 +25,7 @@ This repository supports my personal stream setup and serves as a public referen
 
 ## Requirements
 
-- **Streamer.bot 0.2.x** or later
+- **Streamer.bot 1.0.4** or later
 - Twitch account connected in Streamer.bot (for Twitch-specific features)
 - OBS or SLOBS connected via Streamer.bot plugin (for scene-switching features)
 - Basic familiarity with Streamer.bot actions and sub-actions
@@ -51,7 +51,7 @@ Each folder contains:
 
 ## Versioning and Compatibility
 
-All scripts target **Streamer.bot 0.2.x**. The `CPH` inline API used throughout is the standard `IInlineInvokeProxy` interface injected at runtime — no additional assemblies required unless noted.
+All scripts target **Streamer.bot 1.0.4**. The `CPH` inline API used throughout is the standard `IInlineInvokeProxy` interface injected at runtime — no additional assemblies required unless noted.
 
 ---
 
