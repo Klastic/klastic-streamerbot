@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/Klastic/klastic-streamerbot/compare/klastic-streamerbot-v1.2.2...klastic-streamerbot-v1.2.3) (2026-03-19)
+
+
+### Bug Fixes
+
+* update Streamer.bot version references from 0.2.x to 1.0.4 ([52d5651](https://github.com/Klastic/klastic-streamerbot/commit/52d5651b93d1099e3f5071bda627f8d7006d5087))
+
 ## [1.2.2](https://github.com/Klastic/klastic-streamerbot/compare/klastic-streamerbot-v1.2.1...klastic-streamerbot-v1.2.2) (2026-03-19)
 
 
