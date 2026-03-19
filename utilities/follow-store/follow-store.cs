@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 // ---------------------------------------------------------------------------
 // Cross-Platform Follow Store — Standalone Read/Write Utility
@@ -94,7 +94,7 @@ public class CPHInline
 
     private void WriteEntry(string key, string userName, string displayName, string followedAt, string platform)
     {
-        JsonObject store = LoadStore();
+        JObject store = LoadStore();
 
         // Preserve original follow date — do not overwrite if already recorded
         bool isNew = !store.ContainsKey(key);
@@ -104,7 +104,7 @@ public class CPHInline
             return;
         }
 
-        store[key] = new JsonObject
+        store[key] = new JObject
         {
             ["userName"]    = userName,
             ["displayName"] = displayName,
@@ -118,7 +118,7 @@ public class CPHInline
 
     private void ReadEntry(string key)
     {
-        JsonObject store = LoadStore();
+        JObject store = LoadStore();
 
         if (!store.ContainsKey(key))
         {
@@ -127,10 +127,10 @@ public class CPHInline
             return;
         }
 
-        JsonNode entry = store[key];
-        string followedAtStr  = entry["followedAt"]?.GetValue<string>() ?? "";
-        string storedDisplay  = entry["displayName"]?.GetValue<string>() ?? "";
-        string storedPlatform = entry["platform"]?.GetValue<string>() ?? "";
+        JToken entry = store[key];
+        string followedAtStr  = entry["followedAt"]?.Value<string>() ?? "";
+        string storedDisplay  = entry["displayName"]?.Value<string>() ?? "";
+        string storedPlatform = entry["platform"]?.Value<string>() ?? "";
 
         CPH.SetArgument("followFound",       "true");
         CPH.SetArgument("followDisplayName", storedDisplay);
@@ -151,7 +151,7 @@ public class CPHInline
 
     private void DeleteEntry(string key)
     {
-        JsonObject store = LoadStore();
+        JObject store = LoadStore();
         if (store.ContainsKey(key))
         {
             store.Remove(key);
@@ -166,7 +166,7 @@ public class CPHInline
 
     private bool EntryExists(string key)
     {
-        JsonObject store = LoadStore();
+        JObject store = LoadStore();
         return store.ContainsKey(key);
     }
 
@@ -174,24 +174,24 @@ public class CPHInline
     // File I/O helpers
     // -------------------------------------------------------------------------
 
-    private JsonObject LoadStore()
+    private JObject LoadStore()
     {
         try
         {
             if (!File.Exists(FOLLOW_DATA_FILE))
-                return new JsonObject();
+                return new JObject();
 
             string json = File.ReadAllText(FOLLOW_DATA_FILE);
-            return JsonNode.Parse(json) as JsonObject ?? new JsonObject();
+            return JToken.Parse(json) as JObject ?? new JObject();
         }
         catch (Exception ex)
         {
             CPH.LogWarn("[follow-store] Failed to load store: " + ex.Message);
-            return new JsonObject();
+            return new JObject();
         }
     }
 
-    private void SaveStore(JsonObject store)
+    private void SaveStore(JObject store)
     {
         try
         {
@@ -199,8 +199,7 @@ public class CPHInline
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            File.WriteAllText(FOLLOW_DATA_FILE, store.ToJsonString(options));
+            File.WriteAllText(FOLLOW_DATA_FILE, store.ToString(Formatting.Indented));
         }
         catch (Exception ex)
         {
