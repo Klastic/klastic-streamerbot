@@ -2,7 +2,7 @@
 
 ## Summary
 
-Rotates through a list of social media reminder messages on a schedule, posting one each interval. Includes an activity guard that skips posting if fewer than N chat messages have been sent since the last reminder — so the timer stays quiet during slow or empty chat periods.
+Rotates through a list of social media reminder messages on a schedule, posting one each interval. Fires on a pure time-based schedule — no chat activity required.
 
 The rotation index is stored as a non-persisted global so it persists across triggers within a session but resets between streams.
 
@@ -27,22 +27,9 @@ See [`social-reminder.cs`](social-reminder.cs).
 1. Go to **Timers → Add**
 2. Name: `Social Reminder`
 3. Action: `Social Reminder Timer`
-4. Interval: `1200` seconds (or your preferred interval)
+4. Interval: `900` seconds (15 minutes)
 
 > **Note:** Streamer.bot timers do not have a native "only when live" option. The script handles this automatically — it checks `CPH.ObsIsStreaming()` at the start and skips the reminder if OBS is not streaming. Set `CHECK_OBS_STREAMING = false` in the script if you don't use OBS.
-
-### Step 3 — Track chat activity (required for activity guard)
-
-The script reads a global `chatLineCount` that increments with each chat message. Set this up:
-
-1. Go to **Events → Twitch → Chat Message**
-2. Create (or open) the action for that event
-3. Add a sub-action: **Variables → Increment Global Variable**
-   - Name: `chatLineCount`
-   - Amount: `1`
-   - Persisted: **No**
-
-> If you skip this step, `chatLineCount` will always be 0 and the reminder will never post. Set `MIN_CHAT_LINES_SINCE_LAST` to `0` in the script to disable the activity guard.
 
 ---
 
@@ -51,7 +38,6 @@ The script reads a global `chatLineCount` that increments with each chat message
 | Value | Location | Purpose |
 |---|---|---|
 | `MESSAGES` array | Top of script | The messages to rotate through — add/remove/reorder freely |
-| `MIN_CHAT_LINES_SINCE_LAST` | Top of script | Minimum chat activity required before posting (0 to disable) |
 | `CHECK_OBS_STREAMING` | Top of script | Set to `false` to skip the OBS live check (e.g. if you use SLOBS) |
 | Timer interval | Streamer.bot Timers settings | How often the action is triggered |
 
@@ -59,13 +45,13 @@ The script reads a global `chatLineCount` that increments with each chat message
 
 ## Repo Notes
 
-Rotating social reminder with activity guard. Requires a `chatLineCount` global incremented per chat message. Rotation state is stored in a non-persisted global (`socialReminderIndex`).
+Rotating social reminder on a pure time-based schedule. Rotation state is stored in a non-persisted global (`socialReminderIndex`).
 
 ---
 
 ## Video Notes
 
 Worth highlighting:
-- The activity guard pattern and why posting into dead chat is worth avoiding
+- Pure time-based schedule — fires every interval regardless of chat activity
 - Rotating vs. random message selection (this uses rotation for predictability)
 - How the index global wraps with modulo arithmetic
