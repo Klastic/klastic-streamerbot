@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+using Newtonsoft.Json.Linq;
 
 public class CPHInline
 {
@@ -13,15 +12,12 @@ public class CPHInline
     // Per-user cooldown (seconds) before the same viewer can run !followage again.
     private const int PER_USER_COOLDOWN_SECONDS = 30;
 
-    // Global variable name where the broadcaster's Twitch user ID is cached (Twitch only).
-    private const string GLOBAL_BROADCASTER_ID = "broadcasterUserId";
-
     // Path to the cross-platform follow data file (relative to Streamer.bot executable).
-    // This file is written by the New Follower event action and read here for YouTube/Kick.
+    // This file is written by the New Follower event action and read here.
     private static readonly string FOLLOW_DATA_FILE = Path.Combine(
         AppDomain.CurrentDomain.BaseDirectory, "data", "klastic-follows.json");
 
-    // Message when a non-Twitch user is not found in the follow data file.
+    // Message when a user is not found in the follow data file.
     // Placeholders: %user%, %platform%
     private const string MSG_NOT_IN_STORE =
         "@%user% No follow data found for you on %platform%. You may have followed before the bot was active, or haven't followed yet.";
@@ -54,8 +50,8 @@ public class CPHInline
         // Per-user cooldown (non-mods only)
         if (!isBroadcasterOrMod)
         {
-            string cooldownKey = "followageCooldown";
-            string lastRunStr  = CPH.GetUserVar<string>(userName, cooldownKey, false);
+            string cooldownKey = "followageCooldown_" + platform + "_" + userName.ToLower();
+            string lastRunStr  = CPH.GetGlobalVar<string>(cooldownKey, false);
 
             if (!string.IsNullOrEmpty(lastRunStr) &&
                 DateTime.TryParse(lastRunStr, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime lastRun))
@@ -69,68 +65,22 @@ public class CPHInline
                 }
             }
 
-            CPH.SetUserVar(userName, cooldownKey, DateTime.UtcNow.ToString("O"), false);
+            CPH.SetGlobalVar(cooldownKey, DateTime.UtcNow.ToString("O"), false);
         }
 
-        // Route to appropriate lookup based on platform
-        if (platform == "twitch")
-            return HandleTwitch(userName, targetLogin, isBroadcasterOrMod);
-        else
-            return HandleNonTwitch(userName, targetLogin, platform);
+        // Route to follow store lookup for all platforms
+        return HandleFollowStore(userName, targetLogin, platform);
     }
 
     // -------------------------------------------------------------------------
-    // Twitch: use the live API for authoritative follow data
+    // Follow store lookup (all platforms)
     // -------------------------------------------------------------------------
 
-    private bool HandleTwitch(string callerName, string targetLogin, bool isBroadcasterOrMod)
-    {
-        string broadcastId = CPH.GetGlobalVar<string>(GLOBAL_BROADCASTER_ID, false);
-
-        var targetUser = CPH.TwitchGetExtendedUserInfoByLogin(targetLogin);
-        if (targetUser == null)
-        {
-            CPH.SendMessage("@" + callerName + " Could not find Twitch user '" + targetLogin + "'.");
-            return true;
-        }
-
-        if (string.IsNullOrEmpty(broadcastId))
-        {
-            CPH.LogWarn("[followage] Global '" + GLOBAL_BROADCASTER_ID + "' is not set.");
-            CPH.SendMessage("Follow-age lookup is not configured. Ask the streamer to set it up!");
-            return true;
-        }
-
-        var followInfo = CPH.TwitchGetFollow(targetUser.UserId, broadcastId);
-        if (followInfo == null)
-        {
-            string notFollowingLabel = isBroadcasterOrMod && targetLogin != callerName.ToLower()
-                ? targetUser.UserName + " is"
-                : "You are";
-            CPH.SendMessage("@" + callerName + " " + notFollowingLabel + " not following this channel.");
-            return true;
-        }
-
-        DateTime followedAtUtc = followInfo.FollowedAt.ToUniversalTime();
-        string   ageStr        = FormatFollowAge(followedAtUtc);
-        string   followDate    = followedAtUtc.ToString("MMMM d, yyyy");
-        string   subjectLabel  = isBroadcasterOrMod && targetLogin != callerName.ToLower()
-            ? targetUser.UserName + " has"
-            : "You have";
-
-        CPH.SendMessage("@" + callerName + " " + subjectLabel + " been following since " + followDate + " (" + ageStr + ").");
-        return true;
-    }
-
-    // -------------------------------------------------------------------------
-    // YouTube / Kick: look up the local follow data file
-    // -------------------------------------------------------------------------
-
-    private bool HandleNonTwitch(string callerName, string targetLogin, string platform)
+    private bool HandleFollowStore(string callerName, string targetLogin, string platform)
     {
         string storeKey = platform + ":" + targetLogin;
 
-        JsonObject store = LoadFollowStore();
+        JObject store = LoadFollowStore();
         if (store == null || !store.ContainsKey(storeKey))
         {
             string msg = MSG_NOT_IN_STORE
@@ -140,9 +90,9 @@ public class CPHInline
             return true;
         }
 
-        JsonNode entry = store[storeKey];
-        string   displayName = entry["displayName"]?.GetValue<string>() ?? targetLogin;
-        string   followedAtStr = entry["followedAt"]?.GetValue<string>() ?? null;
+        JToken entry = store[storeKey];
+        string   displayName = entry["displayName"]?.Value<string>() ?? targetLogin;
+        string   followedAtStr = entry["followedAt"]?.Value<string>() ?? null;
 
         if (DateTime.TryParse(followedAtStr, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime followedAt))
         {
@@ -180,20 +130,20 @@ public class CPHInline
         return "twitch";
     }
 
-    private JsonObject LoadFollowStore()
+    private JObject LoadFollowStore()
     {
         try
         {
             if (!File.Exists(FOLLOW_DATA_FILE))
-                return new JsonObject();
+                return new JObject();
 
             string json = File.ReadAllText(FOLLOW_DATA_FILE);
-            return JsonNode.Parse(json) as JsonObject ?? new JsonObject();
+            return JToken.Parse(json) as JObject ?? new JObject();
         }
         catch (Exception ex)
         {
             CPH.LogWarn("[followage] Failed to read follow store: " + ex.Message);
-            return new JsonObject();
+            return new JObject();
         }
     }
 

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 public class CPHInline
 {
@@ -96,7 +96,7 @@ public class CPHInline
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
-            JsonObject store = new JsonObject();
+            JObject store = new JObject();
 
             // Load existing data
             if (File.Exists(FOLLOW_DATA_FILE))
@@ -104,12 +104,12 @@ public class CPHInline
                 try
                 {
                     string existing = File.ReadAllText(FOLLOW_DATA_FILE);
-                    store = JsonNode.Parse(existing) as JsonObject ?? new JsonObject();
+                    store = JToken.Parse(existing) as JObject ?? new JObject();
                 }
                 catch (Exception ex)
                 {
                     CPH.LogWarn("[new-follower] Could not read existing follow store (" + ex.Message + ") — starting fresh.");
-                    store = new JsonObject();
+                    store = new JObject();
                 }
             }
 
@@ -118,7 +118,7 @@ public class CPHInline
             // Only write if not already recorded (preserves the original follow date)
             if (!store.ContainsKey(key))
             {
-                store[key] = new JsonObject
+                store[key] = new JObject
                 {
                     ["userName"]    = userNameLower,
                     ["displayName"] = displayName,
@@ -126,8 +126,7 @@ public class CPHInline
                     ["platform"]    = CapFirst(platform),
                 };
 
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                File.WriteAllText(FOLLOW_DATA_FILE, store.ToJsonString(options));
+                File.WriteAllText(FOLLOW_DATA_FILE, store.ToString(Formatting.Indented));
                 CPH.LogInfo("[new-follower] Wrote follow entry for " + key);
             }
         }
