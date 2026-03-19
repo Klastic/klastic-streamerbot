@@ -1,5 +1,5 @@
 {
-  ".": "1.2.0",
+  ".": "1.2.1",
   "commands/followage": "1.0.1",
   "commands/hydration": "1.1.0",
   "commands/lurk": "1.0.1",
@@ -14,7 +14,7 @@
   "timers/break-reminder": "1.1.0",
   "timers/hydration-reminder": "1.1.0",
   "timers/no-spoilers": "1.2.0",
-  "timers/social-reminder": "1.0.1",
+  "timers/social-reminder": "1.0.2",
   "utilities/follow-store": "1.0.1",
   "utilities/user-cooldown": "1.0.1"
 }
