@@ -1,12 +1,12 @@
 {
-  ".": "1.2.1",
-  "commands/followage": "1.0.1",
+  ".": "1.2.2",
+  "commands/followage": "1.0.2",
   "commands/hydration": "1.1.0",
   "commands/lurk": "1.0.1",
   "commands/shoutout": "1.0.1",
   "commands/socials": "1.0.1",
   "commands/uptime": "1.0.1",
-  "events/new-follower": "1.0.1",
+  "events/new-follower": "1.0.2",
   "events/new-subscriber": "1.0.1",
   "events/raid-handler": "1.0.1",
   "events/stream-end": "1.0.1",
@@ -15,6 +15,6 @@
   "timers/hydration-reminder": "1.1.0",
   "timers/no-spoilers": "1.2.0",
   "timers/social-reminder": "1.0.2",
-  "utilities/follow-store": "1.0.1",
+  "utilities/follow-store": "1.0.2",
   "utilities/user-cooldown": "1.0.1"
 }

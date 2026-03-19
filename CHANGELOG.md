@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.2](https://github.com/Klastic/klastic-streamerbot/compare/klastic-streamerbot-v1.2.1...klastic-streamerbot-v1.2.2) (2026-03-19)
+
+
+### Bug Fixes
+
+* followage compilation errors in Streamer.bot 1.0.4 ([9162b25](https://github.com/Klastic/klastic-streamerbot/commit/9162b2537ac0bb010c9ce4f74c1a333a2e076583))
+* replace System.Text.Json with Newtonsoft.Json and fix deprecated/removed Streamer.bot APIs ([c21a5ff](https://github.com/Klastic/klastic-streamerbot/commit/c21a5ff1f76c970018e875f621688f26ccc2e0d2))
+* restore Twitch follow-age path using Get Follow Age Info for Target sub-action ([71fd345](https://github.com/Klastic/klastic-streamerbot/commit/71fd3458877afd63e6db2d800612c63e77d5c1fc))
+
 ## [1.2.1](https://github.com/Klastic/klastic-streamerbot/compare/klastic-streamerbot-v1.2.0...klastic-streamerbot-v1.2.1) (2026-03-19)
 
 
