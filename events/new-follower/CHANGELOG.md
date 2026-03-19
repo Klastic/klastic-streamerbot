@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/Klastic/klastic-streamerbot/compare/new-follower-v1.0.1...new-follower-v1.0.2) (2026-03-19)
+
+
+### Bug Fixes
+
+* followage compilation errors in Streamer.bot 1.0.4 ([9162b25](https://github.com/Klastic/klastic-streamerbot/commit/9162b2537ac0bb010c9ce4f74c1a333a2e076583))
+* replace System.Text.Json with Newtonsoft.Json and fix deprecated/removed Streamer.bot APIs ([c21a5ff](https://github.com/Klastic/klastic-streamerbot/commit/c21a5ff1f76c970018e875f621688f26ccc2e0d2))
+
 ## [1.0.1](https://github.com/Klastic/klastic-streamerbot/compare/new-follower-v1.0.0...new-follower-v1.0.1) (2026-03-18)
 
 
