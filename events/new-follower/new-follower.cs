@@ -80,7 +80,18 @@ public class CPHInline
             message = StripFollowCount(message);
         }
 
-        CPH.SendMessage(message);
+        switch (platform)
+        {
+            case "kick":
+                CPH.SendKickMessage(message, false, true);
+                break;
+            case "youtube":
+                CPH.SendYouTubeMessageToLatestMonitored(message, false, true);
+                break;
+            default: // twitch
+                CPH.SendMessage(message, false, true);
+                break;
+        }
         return true;
     }
 
