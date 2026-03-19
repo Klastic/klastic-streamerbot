@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/Klastic/klastic-streamerbot/compare/klastic-streamerbot-v1.2.0...klastic-streamerbot-v1.2.1) (2026-03-19)
+
+
+### Bug Fixes
+
+* remove chat activity guard from social-reminder, make time-based only ([ebbf8e1](https://github.com/Klastic/klastic-streamerbot/commit/ebbf8e166e9c6e9d6585923f0460e24014f9545f))
+* **social-reminder:** remove chat activity guard, post on pure time schedule ([ff2e4dd](https://github.com/Klastic/klastic-streamerbot/commit/ff2e4dd2bc1870067f6ffe15a4f1ff12de36b881))
+
 ## [1.2.0](https://github.com/Klastic/klastic-streamerbot/compare/klastic-streamerbot-v1.1.0...klastic-streamerbot-v1.2.0) (2026-03-19)
 
 
