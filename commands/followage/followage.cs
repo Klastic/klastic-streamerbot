@@ -68,15 +68,58 @@ public class CPHInline
             CPH.SetGlobalVar(cooldownKey, DateTime.UtcNow.ToString("O"), false);
         }
 
-        // Route to follow store lookup for all platforms
-        return HandleFollowStore(userName, targetLogin, platform);
+        // Route to appropriate lookup based on platform
+        if (platform == "twitch")
+            return HandleTwitch(userName, targetLogin, isBroadcasterOrMod);
+        else
+            return HandleNonTwitch(userName, targetLogin, platform);
     }
 
     // -------------------------------------------------------------------------
-    // Follow store lookup (all platforms)
+    // Twitch: read follow age data from args populated by the
+    // "Get Follow Age Info for Target" sub-action (must run before this script)
     // -------------------------------------------------------------------------
 
-    private bool HandleFollowStore(string callerName, string targetLogin, string platform)
+    private bool HandleTwitch(string callerName, string targetLogin, bool isBroadcasterOrMod)
+    {
+        // isFollowing is set by the "Get Follow Age Info for Target" sub-action
+        if (!args.ContainsKey("isFollowing"))
+        {
+            CPH.LogWarn("[followage] Twitch follow age info not found in args. Ensure the 'Get Follow Age Info for Target' sub-action runs before this script.");
+            CPH.SendMessage("@" + callerName + " Could not retrieve follow info — action is misconfigured.");
+            return true;
+        }
+
+        bool isFollowing = args["isFollowing"] is bool boolVal
+            ? boolVal
+            : string.Equals(args["isFollowing"]?.ToString(), "true", StringComparison.OrdinalIgnoreCase);
+
+        string callerNameLower = callerName.ToLower();
+        bool lookingUpOther = isBroadcasterOrMod && !string.IsNullOrEmpty(targetLogin)
+                              && targetLogin != callerNameLower;
+        string displayName  = args.ContainsKey("followUser") ? args["followUser"].ToString() : targetLogin;
+
+        if (!isFollowing)
+        {
+            string notFollowingLabel = lookingUpOther ? displayName + " is" : "You are";
+            CPH.SendMessage("@" + callerName + " " + notFollowingLabel + " not following this channel.");
+            return true;
+        }
+
+        string followDate    = args.ContainsKey("followDate")    ? args["followDate"].ToString()    : "unknown date";
+        string followAgeLong = args.ContainsKey("followAgeLong") ? args["followAgeLong"].ToString() : null;
+        string subjectLabel  = lookingUpOther ? displayName + " has" : "You have";
+
+        string agePart = !string.IsNullOrEmpty(followAgeLong) ? " (" + followAgeLong + ")" : "";
+        CPH.SendMessage("@" + callerName + " " + subjectLabel + " been following since " + followDate + agePart + ".");
+        return true;
+    }
+
+    // -------------------------------------------------------------------------
+    // YouTube / Kick: look up the local follow data file
+    // -------------------------------------------------------------------------
+
+    private bool HandleNonTwitch(string callerName, string targetLogin, string platform)
     {
         string storeKey = platform + ":" + targetLogin;
 
