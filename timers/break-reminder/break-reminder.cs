@@ -7,9 +7,9 @@ public class CPHInline
     // Configuration
     // -------------------------------------------------------------------------
 
-    // The reminder is sent to chat so viewers can encourage the streamer.
+    // Message sent to chat when the break timer fires.
     // %streamer% is replaced with the broadcaster's display name.
-    private const string MSG_HYDRATION = "💧 Hey %streamer%, have you had some water recently? Stay hydrated! 🫗";
+    private const string MSG_BREAK = "🧘 Hey %streamer%, time for a quick break! Stretch, rest your eyes, and take a moment. You've got this! 💪";
 
     // Global variable name holding the broadcaster's display name (set by stream start action)
     private const string GLOBAL_BROADCASTER_NAME = "broadcastUserName";
@@ -24,7 +24,7 @@ public class CPHInline
     {
         if (CHECK_OBS_STREAMING && !CPH.ObsIsStreaming())
         {
-            CPH.LogInfo("[hydration-reminder] OBS is not streaming — skipping.");
+            CPH.LogInfo("[break-reminder] OBS is not streaming — skipping.");
             return true;
         }
 
@@ -38,7 +38,7 @@ public class CPHInline
                 broadcaster = "streamer";
         }
 
-        CPH.SendMessage(MSG_HYDRATION.Replace("%streamer%", broadcaster));
+        CPH.SendMessage(MSG_BREAK.Replace("%streamer%", broadcaster));
         return true;
     }
 }

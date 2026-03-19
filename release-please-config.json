@@ -8,6 +8,12 @@
       "version-file": "klastic-streamerbot.csproj",
       "changelog-path": "CHANGELOG.md"
     },
+    "commands/hydration": {
+      "release-type": "simple",
+      "package-name": "hydration",
+      "version-file": "commands/hydration/hydration.csproj",
+      "changelog-path": "CHANGELOG.md"
+    },
     "commands/followage": {
       "release-type": "simple",
       "package-name": "followage",
@@ -66,6 +72,12 @@
       "release-type": "simple",
       "package-name": "stream-start",
       "version-file": "events/stream-start/stream-start.csproj",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "timers/break-reminder": {
+      "release-type": "simple",
+      "package-name": "break-reminder",
+      "version-file": "timers/break-reminder/break-reminder.csproj",
       "changelog-path": "CHANGELOG.md"
     },
     "timers/hydration-reminder": {
