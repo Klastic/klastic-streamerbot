@@ -6,6 +6,8 @@ Chat commands triggered by viewers or the broadcaster. Each command is a self-co
 |---|---|---|
 | `!uptime` | [`uptime/`](uptime/) | Shows how long the stream has been live |
 | `!followage` | [`followage/`](followage/) | Shows how long a user has been following the channel |
+| `!game` | [`game/`](game/) | Shows the current game and detects Fallout: London |
+| `!hydrate` | [`hydration/`](hydration/) | Sends a hydration reminder with visible cooldown feedback |
 | `!socials` | [`socials/`](socials/) | Posts social media links in chat |
 | `!lurk` / `!unlurk` | [`lurk/`](lurk/) | Tracks viewers who go into lurk mode |
 | `!shoutout` / `!so` | [`shoutout/`](shoutout/) | Gives a shoutout to another streamer |

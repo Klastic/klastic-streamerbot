@@ -33,8 +33,8 @@ public class CPHInline
 
     public bool Execute()
     {
-        string user     = args.ContainsKey("user")      ? args["user"].ToString()      : null;
-        string userName = args.ContainsKey("userName")  ? args["userName"].ToString()  : null;
+        string user     = ReadArg("user", "displayName", "userName", "username");
+        string userName = ReadArg("userName", "username", "user", "displayName");
         string platform = DetectPlatform();
 
         if (string.IsNullOrEmpty(userName))
@@ -80,7 +80,7 @@ public class CPHInline
             message = StripFollowCount(message);
         }
 
-        CPH.SendMessage(message);
+        Send(platform, message);
         return true;
     }
 
@@ -149,10 +149,26 @@ public class CPHInline
         return "twitch";
     }
 
+    private string ReadArg(params string[] keys)
+    {
+        foreach (string key in keys)
+        {
+            if (args.ContainsKey(key) && args[key] != null && !string.IsNullOrWhiteSpace(args[key].ToString()))
+                return args[key].ToString().Trim();
+        }
+        return null;
+    }
+
+    private void Send(string platform, string message)
+    {
+        if (platform == "youtube") CPH.SendYouTubeMessageToLatestMonitored(message);
+        else if (platform == "kick") CPH.SendKickMessage(message);
+        else CPH.SendMessage(message);
+    }
+
     private static string StripFollowCount(string msg) =>
         msg.Replace(" (%followCount% followers)", "").Replace("(%followCount% followers)", "");
 
     private static string CapFirst(string s) =>
         string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s.Substring(1);
 }
-
