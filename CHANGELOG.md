@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/Klastic/klastic-streamerbot/compare/klastic-streamerbot-v1.2.3...klastic-streamerbot-v1.2.4) (2026-08-21)
+
+
+### Bug Fixes
+
+* repair cross-platform chat commands ([2ea5bae](https://github.com/Klastic/klastic-streamerbot/commit/2ea5baecd04575a5188846e5f6ab02a27a9e7c38))
+
 ## [1.2.3](https://github.com/Klastic/klastic-streamerbot/compare/klastic-streamerbot-v1.2.2...klastic-streamerbot-v1.2.3) (2026-03-19)
 
 

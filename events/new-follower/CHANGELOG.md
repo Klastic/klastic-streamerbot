@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/Klastic/klastic-streamerbot/compare/new-follower-v1.0.2...new-follower-v1.0.3) (2026-08-21)
+
+
+### Bug Fixes
+
+* repair cross-platform chat commands ([2ea5bae](https://github.com/Klastic/klastic-streamerbot/commit/2ea5baecd04575a5188846e5f6ab02a27a9e7c38))
+
 ## [1.0.2](https://github.com/Klastic/klastic-streamerbot/compare/new-follower-v1.0.1...new-follower-v1.0.2) (2026-03-19)
 
 
