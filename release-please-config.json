@@ -20,6 +20,12 @@
       "version-file": "commands/followage/followage.csproj",
       "changelog-path": "CHANGELOG.md"
     },
+    "commands/game": {
+      "release-type": "simple",
+      "package-name": "game",
+      "version-file": "commands/game/game.csproj",
+      "changelog-path": "CHANGELOG.md"
+    },
     "commands/lurk": {
       "release-type": "simple",
       "package-name": "lurk",

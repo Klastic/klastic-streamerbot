@@ -1,8 +1,8 @@
-# `!hydration` — Hydration Reminder Command
+# `!hydrate` Hydration Reminder Command
 
 ## Summary
 
-Lets any viewer use `!hydration` in chat to nudge the streamer to drink water. The message tags the streamer and credits the viewer who sent the reminder. A per-user cooldown prevents spam.
+Lets viewers use `!hydrate` in Twitch, YouTube, or Kick chat to remind Klastic to drink water. The command has a ten minute global cooldown and reports the remaining wait time whenever it is on cooldown.
 
 ---
 
@@ -20,13 +20,13 @@ See [`hydration.cs`](hydration.cs).
 2. Add a sub-action: **Core → Execute C# Code**
 3. Paste `hydration.cs` into the editor, **Compile**, then **Save**
 
-### Create the `!hydration` command trigger
+### Create the `!hydrate` command trigger
 
 1. Go to **Commands → Add**
-2. Command: `!hydration`
+2. Command: `!hydrate`
 3. Action: `Hydration Command`
 4. Recommended settings:
-   - **Global Cooldown**: 60 seconds
+   - **Global Cooldown**: 0 seconds because the script owns the cooldown and reports remaining time
    - **Case Insensitive**: Yes
 
 ---
@@ -35,14 +35,13 @@ See [`hydration.cs`](hydration.cs).
 
 | Value | Location | Purpose |
 |---|---|---|
-| `MSG_HYDRATION` | Top of script | The chat message — use `%user%` for the viewer's name and `%streamer%` for the broadcaster's name |
-| `COOLDOWN_SECONDS` | Top of script | Per-user cooldown in seconds (default: 300 / 5 minutes). Set to `0` to disable. |
+| `CooldownSeconds` | Top of script | Global cooldown length in seconds |
 
 ---
 
 ## Repo Notes
 
-Per-user cooldown is enforced via a persistent user variable (`hydrationLastUsed`) so the cooldown survives Streamer.bot restarts. You can also configure a global command cooldown in Streamer.bot's **Commands** settings for an additional layer of rate limiting.
+The script owns cooldown behavior so viewers never see a silent failure. Replies are routed to the platform where the command was invoked.
 
 ---
 

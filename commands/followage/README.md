@@ -7,7 +7,7 @@ Shows how long a user has been following the channel. Detects the platform the c
 - **Twitch**: reads follow age from args populated by the built-in **Get Follow Age Info for Target** sub-action — includes authoritative follow date and human-readable age directly from Twitch
 - **YouTube / Kick**: reads from a local JSON follow-data file (`data/klastic-follows.json`) that is populated by the [New Follower event handler](../../events/new-follower/)
 
-Mods and the broadcaster can look up any user by passing a username (`!followage someuser`). Regular viewers have a per-user cooldown.
+The command looks up the viewer who invoked it. Regular viewers have a per-user cooldown, and cooldown attempts report the remaining wait time.
 
 > **Note on YouTube/Kick:** Because these platforms do not have a public follow-date API, follow data is only available for people who followed while the bot was active. The JSON store is built incrementally over time.
 
@@ -29,8 +29,8 @@ Follow the setup in [`events/new-follower/README.md`](../../events/new-follower/
 
 1. Go to **Actions → Add**, name it `!followage`
 2. Add a sub-action: **Twitch → Followers → Get Follow Age Info for Target**
-   - **Source Type**: `From Input`
-   - This reads the username typed after `!followage` (or defaults to the command invoker when no username is given)
+   - **Source Type**: `User`
+   - This reads the Twitch user who invoked `!followage`
 3. Add a sub-action: **Core → Execute C# Code**
 4. Paste `followage.cs` into the editor, **Compile**, then **Save**
 
@@ -42,7 +42,7 @@ Follow the setup in [`events/new-follower/README.md`](../../events/new-follower/
 2. Command: `!followage`
 3. Action: the action above
 4. Recommended settings:
-   - **Global Cooldown**: 3 seconds
+   - **Global Cooldown**: 0 seconds
    - **Case Insensitive**: Yes
 5. Add triggers for Twitch, YouTube, and Kick chat message events
 
@@ -70,7 +70,7 @@ Follow the setup in [`events/new-follower/README.md`](../../events/new-follower/
 
 ## Repo Notes
 
-Platform-aware follow-age command. Twitch path reads follow age from args populated by the built-in "Get Follow Age Info for Target" sub-action (authoritative, includes retroactive follows). YouTube/Kick paths read from the local JSON follow store (`data/klastic-follows.json`) populated by the New Follower event handler. The follow store key format is `platform:username` (e.g., `kick:viewername`).
+Platform-aware follow-age command. Twitch reads authoritative follow data from the built-in lookup. YouTube and Kick use the local JSON follow store populated by new follower events. Replies return only to the platform that requested them. Broadcasters receive an explicit explanation because they cannot follow their own Twitch channel.
 
 ---
 
@@ -82,4 +82,3 @@ Worth highlighting:
 - Platform detection via `args["platform"]` and the fallback to "twitch"
 - The `HandleTwitch` / `HandleNonTwitch` split and why they're separate methods
 - Why the "Get Follow Age Info for Target" sub-action must run **before** the C# inline code
-

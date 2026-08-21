@@ -2,11 +2,11 @@
 
 ## Summary
 
-Displays how long the current stream has been live. Pulls the stream time **directly from OBS** via the OBS WebSocket integration in Streamer.bot (primary), and falls back to a `streamStartedAt` global variable if OBS is not connected or not streaming.
+Displays how long the current stream has been live. It reads OBS `GetStreamStatus` output and explicitly reports when the stream is not live.
 
 Works on Twitch, YouTube, and Kick — the source is OBS, not a platform API, so it's fully platform-agnostic.
 
-Handles edge cases: OBS not connected, OBS connected but not streaming, missing fallback global, malformed timestamp, and stale values from a previous session.
+Handles OBS offline state and malformed or unavailable timecodes. Replies return only to the platform that requested them.
 
 ---
 
@@ -39,9 +39,11 @@ The `streamStartedAt` global from the [`stream-start`](../../events/stream-start
 ### Step 3 — Create the command action
 
 1. Go to **Actions → Add**, name it `!uptime`
-2. Add a sub-action: **Core → Execute C# Code**
-3. Paste the contents of `uptime.cs` into the editor
-4. Click **Compile**, then **Save**
+2. Add **OBS → Raw → Raw Request** with request type `GetStreamStatus`
+3. Set the result prefix to `obsRaw` and enable results to arguments
+4. Add **Core → Execute C# Code** after the OBS request
+5. Paste the contents of `uptime.cs` into the editor
+6. Click **Compile**, then **Save**
 
 ### Step 4 — Create the command trigger
 
@@ -49,7 +51,7 @@ The `streamStartedAt` global from the [`stream-start`](../../events/stream-start
 2. Set the command to `!uptime`
 3. Set the **Action** to the action created above
 4. Recommended settings:
-   - **Global Cooldown**: 5–10 seconds (prevents spam)
+   - **Global Cooldown**: 0 seconds so Streamer.bot never suppresses the offline response
    - **Case Insensitive**: Yes
 5. Add triggers for each platform you stream on (Twitch Chat Message, YouTube Chat Message, Kick Chat Message)
 
@@ -77,7 +79,7 @@ The `streamStartedAt` global from the [`stream-start`](../../events/stream-start
 
 ## Repo Notes
 
-OBS-primary uptime command. Uses `CPH.ObsSendRaw("GetStreamStatus")` to get the live stream timecode from OBS WebSocket v5. Falls back to the `streamStartedAt` global if OBS is unavailable. Platform-agnostic.
+OBS uptime command. A preceding raw `GetStreamStatus` sub action supplies `obsRaw.outputActive` and `obsRaw.outputTimecode`. The code reports offline state explicitly and routes the response to Twitch, YouTube, or Kick.
 
 ---
 
@@ -88,4 +90,3 @@ Worth highlighting:
 - The `CPH.ObsSendRaw("GetStreamStatus")` call and parsing the `outputTimecode` field
 - The fallback chain: OBS → global → "unavailable" message
 - The `responseData` nesting behavior difference between OBS WebSocket versions
-

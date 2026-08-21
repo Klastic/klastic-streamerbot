@@ -27,7 +27,6 @@ public class CPHInline
     public bool Execute()
     {
         string userName  = args.ContainsKey("userName")     ? args["userName"].ToString()     : null;
-        string rawInput  = args.ContainsKey("rawInput")     ? args["rawInput"].ToString()     : null;
         string platform  = DetectPlatform();
 
         if (string.IsNullOrEmpty(userName))
@@ -40,12 +39,7 @@ public class CPHInline
         bool isBroad = args.ContainsKey("isBroadcaster") && args["isBroadcaster"]?.ToString() == "True";
         bool isBroadcasterOrMod = isMod || isBroad;
 
-        // Mods/broadcaster can look up another user: !followage username
-        string targetLogin;
-        if (isBroadcasterOrMod && !string.IsNullOrWhiteSpace(rawInput))
-            targetLogin = rawInput.Trim().TrimStart('@').ToLower();
-        else
-            targetLogin = userName.ToLower();
+        string targetLogin = userName.ToLower();
 
         // Per-user cooldown (non-mods only)
         if (!isBroadcasterOrMod)
@@ -60,7 +54,7 @@ public class CPHInline
                 if (elapsed < PER_USER_COOLDOWN_SECONDS)
                 {
                     int remaining = (int)(PER_USER_COOLDOWN_SECONDS - elapsed) + 1;
-                    CPH.SendMessage("@" + userName + " You can use !followage again in " + remaining + "s.");
+                    Send(platform, "@" + userName + " You can use !followage again in " + remaining + "s.");
                     return true;
                 }
             }
@@ -70,7 +64,7 @@ public class CPHInline
 
         // Route to appropriate lookup based on platform
         if (platform == "twitch")
-            return HandleTwitch(userName, targetLogin, isBroadcasterOrMod);
+            return HandleTwitch(userName, targetLogin);
         else
             return HandleNonTwitch(userName, targetLogin, platform);
     }
@@ -80,13 +74,20 @@ public class CPHInline
     // "Get Follow Age Info for Target" sub-action (must run before this script)
     // -------------------------------------------------------------------------
 
-    private bool HandleTwitch(string callerName, string targetLogin, bool isBroadcasterOrMod)
+    private bool HandleTwitch(string callerName, string targetLogin)
     {
+        if (args.ContainsKey("isBroadcaster") &&
+            string.Equals(args["isBroadcaster"]?.ToString(), "true", StringComparison.OrdinalIgnoreCase))
+        {
+            Send("twitch", "@" + callerName + " Broadcasters cannot follow their own Twitch channel, so there is no follow age to report.");
+            return true;
+        }
+
         // isFollowing is set by the "Get Follow Age Info for Target" sub-action
         if (!args.ContainsKey("isFollowing"))
         {
             CPH.LogWarn("[followage] Twitch follow age info not found in args. Ensure the 'Get Follow Age Info for Target' sub-action runs before this script.");
-            CPH.SendMessage("@" + callerName + " Could not retrieve follow info — action is misconfigured.");
+            Send("twitch", "@" + callerName + " Could not retrieve follow info because the action is misconfigured.");
             return true;
         }
 
@@ -94,24 +95,16 @@ public class CPHInline
             ? boolVal
             : string.Equals(args["isFollowing"]?.ToString(), "true", StringComparison.OrdinalIgnoreCase);
 
-        string callerNameLower = callerName.ToLower();
-        bool lookingUpOther = isBroadcasterOrMod && !string.IsNullOrEmpty(targetLogin)
-                              && targetLogin != callerNameLower;
-        string displayName  = args.ContainsKey("followUser") ? args["followUser"].ToString() : targetLogin;
-
         if (!isFollowing)
         {
-            string notFollowingLabel = lookingUpOther ? displayName + " is" : "You are";
-            CPH.SendMessage("@" + callerName + " " + notFollowingLabel + " not following this channel.");
+            Send("twitch", "@" + callerName + " You are not following this channel.");
             return true;
         }
 
         string followDate    = args.ContainsKey("followDate")    ? args["followDate"].ToString()    : "unknown date";
         string followAgeLong = args.ContainsKey("followAgeLong") ? args["followAgeLong"].ToString() : null;
-        string subjectLabel  = lookingUpOther ? displayName + " has" : "You have";
-
         string agePart = !string.IsNullOrEmpty(followAgeLong) ? " (" + followAgeLong + ")" : "";
-        CPH.SendMessage("@" + callerName + " " + subjectLabel + " been following since " + followDate + agePart + ".");
+        Send("twitch", "@" + callerName + " You have been following since " + followDate + agePart + ".");
         return true;
     }
 
@@ -129,7 +122,7 @@ public class CPHInline
             string msg = MSG_NOT_IN_STORE
                 .Replace("%user%",     callerName)
                 .Replace("%platform%", CapFirst(platform));
-            CPH.SendMessage(msg);
+            Send(platform, msg);
             return true;
         }
 
@@ -146,11 +139,11 @@ public class CPHInline
                 ? "You have"
                 : displayName + " has";
 
-            CPH.SendMessage("@" + callerName + " " + subjectLabel + " been following since " + followDate + " (" + ageStr + ").");
+            Send(platform, "@" + callerName + " " + subjectLabel + " been following since " + followDate + " (" + ageStr + ").");
         }
         else
         {
-            CPH.SendMessage("@" + callerName + " Follow data found but the date could not be read.");
+            Send(platform, "@" + callerName + " Follow data found but the date could not be read.");
         }
 
         return true;
@@ -162,6 +155,11 @@ public class CPHInline
 
     private string DetectPlatform()
     {
+        if (args.ContainsKey("commandSource") && args["commandSource"] != null)
+        {
+            string source = args["commandSource"].ToString().ToLower();
+            if (source == "youtube" || source == "kick" || source == "twitch") return source;
+        }
         if (args.ContainsKey("platform") && args["platform"] != null)
         {
             string p = args["platform"].ToString().ToLower();
@@ -171,6 +169,13 @@ public class CPHInline
         }
         // Default: Twitch (most common setup)
         return "twitch";
+    }
+
+    private void Send(string platform, string message)
+    {
+        if (platform == "youtube") CPH.SendYouTubeMessageToLatestMonitored(message);
+        else if (platform == "kick") CPH.SendKickMessage(message);
+        else CPH.SendMessage(message);
     }
 
     private JObject LoadFollowStore()
@@ -219,4 +224,3 @@ public class CPHInline
     private static string CapFirst(string s) =>
         string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s.Substring(1);
 }
-
