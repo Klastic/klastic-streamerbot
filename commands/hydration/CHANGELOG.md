@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Klastic/klastic-streamerbot/compare/hydration-v1.1.0...hydration-v1.1.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* repair cross-platform chat commands ([2ea5bae](https://github.com/Klastic/klastic-streamerbot/commit/2ea5baecd04575a5188846e5f6ab02a27a9e7c38))
+
 ## [1.1.0](https://github.com/Klastic/klastic-streamerbot/compare/hydration-v1.0.0...hydration-v1.1.0) (2026-03-19)
 
 
